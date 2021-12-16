@@ -24,3 +24,18 @@ app.get("/random", (req, res) => {
         food: "turkey"
     })
 })
+
+//note -- adding a route parameter below
+//note whate happen when req.params was logged to console
+//route parameters can be dynamic
+app.get("/users/:email", (req, res) => {
+    const { email} = req.params
+    const user = users.find((user) => user.email === email)
+    if(user){
+        res.send(user)
+    }
+    else
+    {
+        res.send(404)
+    }
+})
