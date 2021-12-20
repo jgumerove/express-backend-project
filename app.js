@@ -25,8 +25,16 @@ app.get("/users", (req, res) => {
 
 //get to another route
 app.get("/random", (req, res) => {
+    console.log("random")
     res.send({
         food: "turkey"
+    })
+})
+
+app.get('/test', (req, res) => {
+    console.log("good")
+    res.status(200).send({
+        test: "good"
     })
 })
 
