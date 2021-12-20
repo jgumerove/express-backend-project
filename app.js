@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser')
 const { rest } = require('lodash');
 //import express from 'express';
 //cannot use import statement
