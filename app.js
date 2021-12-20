@@ -120,7 +120,7 @@ function validateCookie(req, res, next){
     else res.status(403).send({msg: "denied"})
 }
 
-app.get('/login', validateCookie, (req, res) => {
+app.get('/login', (req, res) => {
   //function on the response object -- cookie()
   res.cookie('session_id', '1991')
   res.status(200).json({msg: 'logged in'})
