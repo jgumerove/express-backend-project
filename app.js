@@ -12,6 +12,14 @@ const tests = [{test: "successful req"}]
 app.use(express.urlencoded({ extended: false}))
 //to enable us to retrieve json -- also a middleware function (detects JSON Payloads)
 app.use(express.json())
+//to enable use to use cookies -- note how we imported on top
+app.use(cookieParser())
+
+
+
+
+
+
 app.use((req, res, next) => {
 console.log(req.method)
 next()
@@ -99,3 +107,28 @@ app.post('/test', authValidator, (req, res) => {
     tests.push(test)
     res.status(201).send(test)
 })
+
+function validateCookie(req, res, next){
+    const { cookies } = req
+    if('session_id' in cookies){
+        console.log("exists")
+        if(cookies.session_id === '1991'){
+            next()
+        }
+        else res.status(403).send({msg: "denied"})
+    }
+    else res.status(403).send({msg: "denied"})
+}
+
+app.get('/login', validateCookie, (req, res) => {
+  //function on the response object -- cookie()
+  res.cookie('session_id', '1991')
+  res.status(200).json({msg: 'logged in'})
+})
+
+app.get('/protected', validateCookie, (req, res) => {
+    res.status(200).json({msg: "you are authorized"})
+})
+
+//note -- server sends a session id
+//browser sends a cookie 
