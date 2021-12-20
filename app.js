@@ -1,10 +1,12 @@
 const express = require('express');
+const { rest } = require('lodash');
 //import express from 'express';
 //cannot use import statement
 //below gives us express functionality
 const app = express();
 const users = [{age: 21, email: "jgumerove"}, {age: 23, email: "jgums"}]
 const authors = [{name: "steve"}, {name: "Joe"}, {name: "J.R Tolken"}]
+const tests = [{test: "successful req"}]
 //to enable us to send requests
 app.use(express.urlencoded({ extended: false}))
 //to enable us to retrieve json -- also a middleware function (detects JSON Payloads)
@@ -37,9 +39,7 @@ app.get("/random", (req, res) => {
 
 app.get('/test', (req, res) => {
     console.log("good")
-    res.status(200).send({
-        test: "good"
-    })
+    res.status(200).send(tests)
 })
 
 //note -- adding a route parameter below
@@ -82,7 +82,19 @@ app.post("/users", (req, res) => {
     }
 })
 
-app.post('/test', (req, res) => {
-    console.log(req.body)
-    console.log(req.headers)
+function authValidator(req, res, next){
+    console.log("inside the auth section")
+    const { authorization } = req.headers
+    if(authorization && authorization === "54321"){
+        console.log("correct auth")
+        next()
+    }
+    else {
+        res.send({ message: "Forbidden improper authorization"})
+    }
+}
+app.post('/test', authValidator, (req, res) => {
+    const test = req.body
+    tests.push(test)
+    res.status(201).send(test)
 })
