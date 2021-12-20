@@ -9,6 +9,10 @@ const authors = [{name: "steve"}, {name: "Joe"}, {name: "J.R Tolken"}]
 app.use(express.urlencoded({ extended: false}))
 //to enable us to retrieve json -- also a middleware function (detects JSON Payloads)
 app.use(express.json())
+app.use((req, res, next) => {
+console.log(req.method)
+next()
+})
 
 app.listen(3001, () => console.log("listening on port 3001"))
 //below makes a get request -- notice takes in a call back as second param
@@ -76,4 +80,9 @@ app.post("/users", (req, res) => {
     {
         console.log("who are you")
     }
+})
+
+app.post('/test', (req, res) => {
+    console.log(req.body)
+    console.log(req.headers)
 })
