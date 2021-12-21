@@ -2,6 +2,8 @@ const express = require('express')
 const session = require('express-session')
 
 const usersRoute = require('./routes/users')
+const winesRoute = require('./routes/wines')
+
 
 const store = new session.MemoryStore()
 const app = express()
@@ -22,7 +24,11 @@ app.use((req, res, next) => {
     next()
 })
 
+
+//must include this an then the rest of the path in the routes file
 app.use('/users', usersRoute)
+app.use('/wines', winesRoute)
+
 
 app.listen(3001, () => {
     console.log("listening on Port 3001")
