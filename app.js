@@ -1,5 +1,8 @@
 const express = require('express');
+//do not need cookieParser with express-session (could delete)
 const cookieParser = require('cookie-parser')
+//will take care of parsing cookies
+const session = require('express-session')
 const { rest } = require('lodash');
 //import express from 'express';
 //cannot use import statement
@@ -14,6 +17,14 @@ app.use(express.urlencoded({ extended: false}))
 app.use(express.json())
 //to enable use to use cookies -- note how we imported on top
 app.use(cookieParser())
+//to enable use of express-session
+app.use(session({
+    secret: 'Dont share',
+    cookie: {message: 30000},
+    saveUninitialized: false
+}))
+
+//want to set to false if have a login system otherwise generate new session id everytime you login
 
 
 
@@ -128,6 +139,10 @@ app.get('/login', (req, res) => {
 
 app.get('/protected', validateCookie, (req, res) => {
     res.status(200).json({msg: "you are authorized"})
+})
+
+app.post('/signup', (req, res) => {
+    res.send(200)
 })
 
 //note -- server sends a session id
