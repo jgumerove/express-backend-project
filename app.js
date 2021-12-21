@@ -20,7 +20,7 @@ app.use(cookieParser())
 //to enable use of express-session
 app.use(session({
     secret: 'Dont share',
-    cookie: {message: 30000},
+    cookie: {maxAge: 30000},
     saveUninitialized: false
 }))
 
@@ -30,7 +30,7 @@ app.use(session({
 
 
 
-
+//will do this middleware action for all requests
 app.use((req, res, next) => {
 console.log(req.method)
 next()
@@ -142,6 +142,28 @@ app.get('/protected', validateCookie, (req, res) => {
 })
 
 app.post('/signup', (req, res) => {
+    const {username, password} = req.body
+    if (username && password){
+        if (req.session.authenticated){
+            res.json(req.session)
+        }
+        else {
+            if (password === '123'){
+            req.session.authenticated = true
+            req.session.user = {
+                username, password
+            }
+            res.json(req.session)
+          }
+          else {
+            res.status(403).json({msg: "bad credentials"})
+        }
+        }
+
+    }
+    else {
+        res.status(403).json({msg: "bad credentials"})
+    }
     res.send(200)
 })
 
