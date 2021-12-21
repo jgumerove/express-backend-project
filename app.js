@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser')
 //will take care of parsing cookies
 const session = require('express-session')
 const { rest } = require('lodash');
+const store = new session.MemoryStore()
 //import express from 'express';
 //cannot use import statement
 //below gives us express functionality
@@ -19,9 +20,11 @@ app.use(express.json())
 app.use(cookieParser())
 //to enable use of express-session
 app.use(session({
+  //notice how we are storing information in our session   
     secret: 'Dont share',
     cookie: {maxAge: 30000},
-    saveUninitialized: false
+    saveUninitialized: false,
+    store: store
 }))
 
 //want to set to false if have a login system otherwise generate new session id everytime you login
@@ -32,6 +35,7 @@ app.use(session({
 
 //will do this middleware action for all requests
 app.use((req, res, next) => {
+console.log(store)
 console.log(req.method)
 next()
 })
@@ -142,6 +146,7 @@ app.get('/protected', validateCookie, (req, res) => {
 })
 
 app.post('/signup', (req, res) => {
+    console.log(req.sessionID)
     const {username, password} = req.body
     if (username && password){
         if (req.session.authenticated){
@@ -164,7 +169,6 @@ app.post('/signup', (req, res) => {
     else {
         res.status(403).json({msg: "bad credentials"})
     }
-    res.send(200)
 })
 
 //note -- server sends a session id
